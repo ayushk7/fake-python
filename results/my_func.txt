@@ -1,0 +1,4 @@
+def my_function(inp):
+    ref = db.reference("/")
+    ref.set(inp)
+    return inp
