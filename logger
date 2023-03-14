@@ -1,0 +1,28 @@
+def logger(func):
+    def wrapper(*args, **kwargs):
+        print(*args, **kwargs)
+        return func(*args, **kwargs)
+    return wrapper
+
+import ast
+
+log_decorator = ast.Name(id='logger', ctx=ast.Load())
+
+class DecoratorTransformer(ast.NodeTransformer):
+    def visit_FunctionDef(self, node: ast.FunctionDef):
+        if node.decorator_list:
+            node.decorator_list.append(log_decorator)
+        else:
+            node.decorator_list = [log_decorator]
+        return node
+
+
+if __name__ == "__main__":
+    with open("./test_function.py", "r") as fp:
+        tree = ast.parse(fp.read())
+        new_tree = DecoratorTransformer().visit(tree)
+        code = ast.unparse(new_tree)
+        print(code)
+    
+        
+
